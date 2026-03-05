@@ -1,0 +1,211 @@
+{
+  "ticker": "AAPL",
+  "features": [
+    "log_return_1d",
+    "log_return_5d",
+    "log_return_20d",
+    "ema_return_5",
+    "ema_return_20",
+    "realized_vol_5d",
+    "realized_vol_20d",
+    "vol_ratio_5_20",
+    "gap_log",
+    "intraday_log",
+    "volume_z_20",
+    "day_of_week",
+    "zscore_price_vs_ma20",
+    "clv",
+    "body_to_range",
+    "vol_ratio_5_60",
+    "rolling_skew_60",
+    "rolling_kurtosis_60",
+    "vix_level",
+    "vix_change_1d",
+    "vix_zscore_60"
+  ],
+  "use_regime_features": true,
+  "prediction_horizon": 1,
+  "seq_len": 60,
+  "rows_total": 9048,
+  "train_rows": 6333,
+  "val_rows": 1357,
+  "test_rows": 1358,
+  "metrics_prediction": {
+    "train": {
+      "mse": 0.000843240612532287,
+      "rmse": 0.029038605554197794,
+      "mae": 0.019976359742371528,
+      "medae": 0.014771405540770268,
+      "r2": 0.06883850848986084,
+      "explained_variance": 0.06979600432383093,
+      "mape": 1.659885782719656,
+      "smape": 1.5104003456427828,
+      "ic": 0.2643238659023045,
+      "rank_ic": 0.1845308521640529,
+      "ic_tstat": 21.705355368647105,
+      "rank_ic_tstat": 14.869455187455289,
+      "hit_ratio": 0.5583359897991712,
+      "balanced_accuracy": 0.5584992354236631,
+      "resid_mean": -0.0009311758422010161,
+      "resid_std": 0.02902598507675596,
+      "resid_skew": -1.900792989626669,
+      "resid_kurtosis": 51.87052311762972,
+      "resid_acf_lag1": -0.0070110453544028695,
+      "resid_acf_lag5": -0.045769960288272744,
+      "n": 6274
+    },
+    "val": {
+      "mse": 0.0003755859877227543,
+      "rmse": 0.019380040962876065,
+      "mae": 0.01347328138207888,
+      "medae": 0.009491736899305747,
+      "r2": -0.0695040049612905,
+      "explained_variance": -0.061564997165753255,
+      "mape": 2.896377383738045,
+      "smape": 1.4836123177289733,
+      "ic": 0.0946196859012195,
+      "rank_ic": 0.06214418290168375,
+      "ic_tstat": 3.4986781989394773,
+      "rank_ic_tstat": 2.2919775215648976,
+      "hit_ratio": 0.5276344878408253,
+      "balanced_accuracy": 0.5173860989715542,
+      "resid_mean": -0.0016697313343536347,
+      "resid_std": 0.019315095385773442,
+      "resid_skew": -0.30034314683588864,
+      "resid_kurtosis": 5.540042220202891,
+      "resid_acf_lag1": -0.04349480994136228,
+      "resid_acf_lag5": 0.038735840801720836,
+      "n": 1357
+    },
+    "test": {
+      "mse": 0.00032907079122230436,
+      "rmse": 0.018140308465467294,
+      "mae": 0.01327904210627721,
+      "medae": 0.009636495657410819,
+      "r2": -0.0554676878237812,
+      "explained_variance": -0.04429950836374852,
+      "mape": 1.9559776322719384,
+      "smape": 1.4904634069732472,
+      "ic": 0.10101269207016413,
+      "rank_ic": 0.06658978172423356,
+      "ic_tstat": 3.7388052811615973,
+      "rank_ic_tstat": 2.457550502302851,
+      "hit_ratio": 0.5176730486008837,
+      "balanced_accuracy": 0.5086004197979315,
+      "resid_mean": -0.0018660075153341545,
+      "resid_std": 0.018050726854429818,
+      "resid_skew": 0.037492026344310134,
+      "resid_kurtosis": 2.8037935552700577,
+      "resid_acf_lag1": 0.024526092194936042,
+      "resid_acf_lag5": -0.056523754012731936,
+      "n": 1358
+    }
+  },
+  "metrics_price_prediction": {
+    "train": {
+      "rmse": 0.15070640668959046,
+      "r2": 0.9995925836619833
+    },
+    "val": {
+      "rmse": 1.1468646649280472,
+      "r2": 0.9969964607343826
+    },
+    "test": {
+      "rmse": 3.2317462338968603,
+      "r2": 0.9941860164620678
+    }
+  },
+  "metrics_trading_test": null,
+  "metrics_trading_test_net": null,
+  "feature_importance": {
+    "permutation": {
+      "baseline_score": 0.10101269207016413,
+      "metric": "ic",
+      "horizon": 1,
+      "csv": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/reports/aapl_feature_importance_permutation_h1.csv"
+    }
+  },
+  "pred_deciles_csv": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/reports/aapl_pred_deciles_h1.csv",
+  "model_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/models/aapl_lstm_h1.pt",
+  "scaler_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/models/aapl_scaler_h1.joblib",
+  "preds_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/preds/aapl_lstm_h1_preds.csv",
+  "config": {
+    "data": {
+      "ticker": "AAPL",
+      "start_date": null,
+      "end_date": null,
+      "download": true,
+      "use_vix": true,
+      "use_spy": false
+    },
+    "features": {
+      "use_exog": true,
+      "use_exogenous": true,
+      "use_regime_features": true
+    },
+    "sequence": {
+      "length": 60
+    },
+    "prediction_horizon": 1,
+    "run_horizons": [
+      1,
+      3
+    ],
+    "split": {
+      "train_ratio": 0.7,
+      "val_ratio": 0.15,
+      "test_ratio": 0.15,
+      "train_end_date": null,
+      "val_end_date": null
+    },
+    "model": {
+      "hidden_size": 64,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "loss": "mse",
+      "lr": 0.001,
+      "weight_decay": 0.0,
+      "batch_size": 64,
+      "epochs": 50,
+      "patience": 8,
+      "grad_clip": 1.0,
+      "seed": 42,
+      "device": "auto",
+      "verbose": true
+    },
+    "strategy": {
+      "mode": "sign",
+      "threshold": 0.0,
+      "fee_bps": 0.0,
+      "slippage_bps": 0.0
+    },
+    "outputs": {
+      "root": "results_lstm",
+      "run_name": "aapl_lstm"
+    },
+    "feature_importance": {
+      "enabled": true,
+      "method": "permutation",
+      "metric": "ic",
+      "n_repeats": 5,
+      "block_size": null,
+      "batch_size": 256,
+      "top_n": 20,
+      "horizon": 1
+    },
+    "rolling_sharpe_window": 63,
+    "plots": {
+      "price_plots_enabled": true,
+      "returns_plots_enabled": true,
+      "residuals_plots_enabled": true,
+      "acf_max_lag": 20,
+      "deciles_enabled": true,
+      "deciles_n": 10,
+      "smoothing_window": 5,
+      "summary_split": "test"
+    },
+    "metrics": {
+      "mape_epsilon": "1e-6"
+    }
+  }
+}

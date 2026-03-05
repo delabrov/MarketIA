@@ -1,0 +1,52 @@
+{
+  "ticker": "AAPL",
+  "feature_cols": [
+    "return_1d",
+    "return_2d",
+    "return_5d",
+    "return_10d",
+    "volatility_5d",
+    "volatility_10d",
+    "volatility_20d",
+    "volume_change_1d",
+    "volume_ratio_20d",
+    "gap_1d",
+    "range_hl_1d",
+    "open_to_close_1d",
+    "clv",
+    "body_to_range",
+    "upper_wick_ratio",
+    "lower_wick_ratio",
+    "range_ratio_20",
+    "vix_level"
+  ],
+  "feature_groups": {
+    "triviales": [
+      "return_1d",
+      "return_2d",
+      "return_5d",
+      "return_10d",
+      "volatility_5d",
+      "volatility_10d",
+      "volatility_20d",
+      "volume_change_1d",
+      "volume_ratio_20d",
+      "gap_1d",
+      "range_hl_1d",
+      "open_to_close_1d",
+      "clv",
+      "body_to_range",
+      "upper_wick_ratio",
+      "lower_wick_ratio",
+      "range_ratio_20"
+    ],
+    "indicateurs": [],
+    "exogenes": [
+      "vix_level"
+    ]
+  },
+  "dataset_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/data/processed/aapl_dataset.parquet",
+  "date_min": "1990-01-02 00:00:00+00:00",
+  "date_max": "2026-02-26 00:00:00+00:00",
+  "rows": 9105
+}
