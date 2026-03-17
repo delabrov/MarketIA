@@ -2,11 +2,11 @@
 
 ## Objectif du projet
 
-Ce projet a pour objectif de prédire l’évolution à court terme du prix d’un actif financier (par exemple une action comme Apple) à l’aide d’un modèle de type LSTM (Long Short-Term Memory). Plus précisément, on cherche à estimer le **rendement du lendemain (retour à J+1)**, c’est-à-dire la variation du prix entre aujourd’hui et le jour suivant.
+Ce projet a pour objectif de prédire l’évolution à court terme du prix d’un actif financier (ici Apple, AAPL) à l’aide d’un modèle de type LSTM (Long Short-Term Memory). Plus précisément, on cherche à estimer le **rendement du lendemain (retour à J+1)**, c’est-à-dire la variation du prix entre aujourd’hui et le jour suivant.
 
 À partir de cette prédiction, l’idée est ensuite de construire une **stratégie d’investissement** : autrement dit, décider quand investir, quand réduire son exposition, et comment gérer le risque.
 
-Ce projet s’inscrit donc à l’intersection de deux domaines :
+Ce projet s’inscrit alors à l’intersection de deux domaines :
 - le **machine learning**, pour faire des prédictions
 - la **finance quantitative**, pour transformer ces prédictions en décisions d’investissement
 
@@ -39,7 +39,7 @@ En d’autres termes, il est particulièrement adapté aux données où **l’or
 
 ## Construction des données
 
-Avant d’entraîner le modèle, il est nécessaire de transformer les données brutes en variables exploitables. Cette étape s’appelle le **feature engineering**.
+Avant d’entraîner le modèle, il est nécessaire de transformer les données brutes en variables exploitables: le **feature engineering**.
 
 À partir des prix historiques, plusieurs types d’indicateurs sont construits :
 
