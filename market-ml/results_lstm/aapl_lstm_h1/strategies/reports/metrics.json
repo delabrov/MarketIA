@@ -1,0 +1,54 @@
+{
+  "buyhold": {
+    "n_days": 1358,
+    "cagr": 0.1200423009,
+    "annualized_vol": 0.280402853,
+    "ann_vol": 0.280402853,
+    "sharpe": 0.5441818067,
+    "max_drawdown": -0.3555320012,
+    "calmar_ratio": 0.337641339,
+    "turnover": 0.000736377,
+    "n_trades": 1,
+    "hit_ratio": 0.5265095729,
+    "average_holding_period": 1358.0
+  },
+  "regime_overlay_condvol_highvol": {
+    "n_days": 1358,
+    "cagr": 0.1544766079,
+    "annualized_vol": 0.1741714382,
+    "ann_vol": 0.1741714382,
+    "sharpe": 0.9114892922,
+    "max_drawdown": -0.1434979222,
+    "calmar_ratio": 1.0765076287,
+    "turnover": 0.1118429396,
+    "n_trades": 832,
+    "hit_ratio": 0.5265095729,
+    "average_holding_period": 1358.0
+  },
+  "regime_overlay_condvol_p80": {
+    "n_days": 1358,
+    "cagr": 0.176240247,
+    "annualized_vol": 0.2072559094,
+    "ann_vol": 0.2072559094,
+    "sharpe": 0.8863789554,
+    "max_drawdown": -0.2178284433,
+    "calmar_ratio": 0.80907821,
+    "turnover": 0.1233930793,
+    "n_trades": 552,
+    "hit_ratio": 0.5265095729,
+    "average_holding_period": 1358.0
+  },
+  "regime_overlay_longonly_base": {
+    "n_days": 1358,
+    "cagr": 0.179854943,
+    "annualized_vol": 0.2494055494,
+    "ann_vol": 0.2494055494,
+    "sharpe": 0.787450078,
+    "max_drawdown": -0.2944861407,
+    "calmar_ratio": 0.6107416214,
+    "turnover": 0.1377025037,
+    "n_trades": 387,
+    "hit_ratio": 0.5265095729,
+    "average_holding_period": 1358.0
+  }
+}
