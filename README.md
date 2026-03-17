@@ -1,6 +1,6 @@
-# 📈 Prédiction de séries temporelles financières avec LSTM
+# Prédiction de séries temporelles financières avec LSTM
 
-## 🧠 Objectif du projet
+## Objectif du projet
 
 Ce projet a pour objectif de prédire l’évolution à court terme du prix d’un actif financier (par exemple une action comme Apple) à l’aide d’un modèle de type LSTM (Long Short-Term Memory). Plus précisément, on cherche à estimer le **rendement du lendemain (retour à J+1)**, c’est-à-dire la variation du prix entre aujourd’hui et le jour suivant.
 
@@ -12,7 +12,7 @@ Ce projet s’inscrit donc à l’intersection de deux domaines :
 
 ---
 
-## 🔍 Comprendre le problème
+## Comprendre le problème
 
 Les marchés financiers évoluent dans le temps, et leurs dynamiques sont souvent complexes, bruitées et difficiles à modéliser. On parle de **série temporelle (time series)**, c’est-à-dire une suite de données ordonnées dans le temps.
 
@@ -24,7 +24,7 @@ Le défi est donc le suivant :
 
 ---
 
-## 🤖 Pourquoi un LSTM ?
+## Pourquoi un LSTM ?
 
 Le modèle utilisé ici est un **LSTM (Long Short-Term Memory)**, un type particulier de réseau de neurones conçu pour traiter des séquences.
 
@@ -37,7 +37,7 @@ En d’autres termes, il est particulièrement adapté aux données où **l’or
 
 ---
 
-## 🏗️ Construction des données
+## Construction des données
 
 Avant d’entraîner le modèle, il est nécessaire de transformer les données brutes en variables exploitables. Cette étape s’appelle le **feature engineering**.
 
@@ -53,7 +53,7 @@ Les données sont ensuite normalisées (mise à l’échelle) afin de faciliter 
 
 ---
 
-## 🧪 Entraînement du modèle
+## Entraînement du modèle
 
 Le modèle LSTM est entraîné sur des séquences de données passées pour apprendre à prédire le rendement futur.
 
@@ -65,7 +65,7 @@ Le processus d’entraînement consiste à ajuster les paramètres du modèle po
 
 ---
 
-## 📊 Évaluation des performances
+## Évaluation des performances
 
 Une fois le modèle entraîné, il est évalué sur des données qu’il n’a jamais vues (données de test). Cela permet de vérifier sa capacité à généraliser.
 
@@ -78,7 +78,7 @@ L’objectif n’est pas uniquement d’avoir une bonne précision, mais surtout
 
 ---
 
-## 💡 De la prédiction à la stratégie
+## De la prédiction à la stratégie
 
 Le modèle produit un signal : une estimation du rendement futur.
 
@@ -92,7 +92,7 @@ Ensuite, des mécanismes de gestion du risque peuvent être ajoutés pour améli
 
 ---
 
-## ⚙️ Organisation du projet
+## Organisation du projet
 
 Le projet est structuré en plusieurs étapes :
 
@@ -106,7 +106,7 @@ Chaque étape est pensée pour être reproductible et modulaire, afin de pouvoir
 
 ---
 
-## 🚀 Conclusion
+## Conclusion
 
 Ce projet montre comment un modèle de machine learning, en particulier un LSTM, peut être utilisé pour analyser des séries temporelles financières et générer des signaux exploitables.
 
