@@ -1,1 +1,1 @@
-# CryptoIA
+# MarketIA
