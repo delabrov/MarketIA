@@ -1,8 +1,8 @@
 # Features utilisees par les modeles
 
-Ce document decrit les features actuellement calculees dans le code et utilisees par les pipelines RF et LSTM.
+Cette section décrit les features calculees dans le code et utilisees par les pipelines LSTM.
 
-## Conventions communes
+## Conventions 
 
 - `C_t`: close AAPL au jour `t`
 - `O_t`: open AAPL au jour `t`
@@ -21,7 +21,7 @@ Hypotheses de construction:
 
 ## Pipeline RF (`src/rf_pipeline/build_dataset.py`)
 
-Le modele RF predit `target_up`, derive de `target_next_log_return = log(C_{t+1}/C_t)`.
+Le modele RF prédit `target_up`, dérivé de `target_next_log_return = log(C_{t+1}/C_t)`.
 
 ### Features triviales
 
@@ -149,7 +149,7 @@ Interpretation: VIX anormalement haut/bas vs son regime recent.
 22. `spy_return_1d = log(SPY_t/SPY_{t-1})` (si SPY charge)
 Interpretation: beta marche broad US.
 
-## Notes d interpretation
+## Notes d'interpretation
 
 - Features de returns:
 elles capturent la direction/force recente mais peuvent etre tres bruites.
