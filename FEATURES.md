@@ -1,6 +1,6 @@
 # Features utilisees par les modeles
 
-Ce document decrit les features actuellement calculees dans le code et utilisees par la pipeline LSTM.
+Ce document décrit les features actuellement calculées dans le code et utilisées par la pipeline LSTM.
 
 ## Conventions
 
@@ -10,72 +10,72 @@ Ce document decrit les features actuellement calculees dans le code et utilisees
 - `L_t`: low AAPL au jour `t`
 - `V_t`: volume AAPL au jour `t`
 - `r_t = log(C_t / C_{t-1})`: log-return journalier
-- `eps = 1e-12` quand un denominateur peut valoir zero
+- `eps = 1e-12` quand un denominateur peut valoir zéro
 
 Hypotheses de construction:
 
-- index temporel trie, en UTC
-- fenetres rolling alignees sur `t` (pas de donnees futures)
-- les NaN/inf dus aux fenetres (debut de serie) sont nettoyes via `dropna` final
-- les series exogenes (VIX/SPY) sont alignees sur les dates du dataset (join sur l'index date)
+- index temporel trié, en UTC
+- fenêtres rolling alignées sur `t` (pas de données futures)
+- les NaN/inf dus aux fenêtres (debut de serie) sont nettoyés via `dropna` final
+- les series exogènes (VIX/SPY) sont alignées sur les dates du dataset (join sur l'index date)
 
 ### Features triviales
 
 1. `return_1d = log(C_t/C_{t-1})`  
-Interpretation: capture le mouvement le plus recent du prix. Une valeur positive indique une dynamique haussiere immediate, souvent utilisee comme proxy de momentum tres court terme.
+Interprétation: capture le mouvement le plus recent du prix. Une valeur positive indique une dynamique haussiere immediate, souvent utilisée comme proxy de momentum tres court terme.
 
 2. `return_2d = log(C_t/C_{t-2})`  
-Interpretation: mesure l'evolution du prix sur deux jours consecutifs, permettant de lisser legerement le bruit journalier.
+Interprétation: mesure l'évolution du prix sur deux jours consécutifs, permettant de lisser légèrement le bruit journalier.
 
 3. `return_5d = log(C_t/C_{t-5})`  
-Interpretation: represente la dynamique hebdomadaire, utile pour detecter des tendances de court terme.
+Interprétation: représente la dynamique hebdomadaire, utile pour détecter des tendances de court terme.
 
 4. `return_10d = log(C_t/C_{t-10})`  
-Interpretation: capture une tendance un peu plus installee sur environ deux semaines de trading.
+Interpéetation: capture une tendance un peu plus installée sur environ deux semaines de trading.
 
 5. `volatility_5d = std_5(return_1d)`  
-Interpretation: mesure la dispersion recente des rendements. Une forte valeur indique un marche agite a court terme.
+Interprétation: mesure la dispersion récente des rendements. Une forte valeur indique un marche agité à court terme.
 
 6. `volatility_10d = std_10(return_1d)`  
-Interpretation: donne une vision intermediaire du risque, moins sensible aux fluctuations tres court terme.
+Interprétation: donne une vision intermédiaire du risque, moins sensible aux fluctuations très court terme.
 
 7. `volatility_20d = std_20(return_1d)`  
-Interpretation: proxy classique de volatilite mensuelle, souvent utilise pour caracteriser les regimes de marche.
+Interprétation: proxy classique de volatilite mensuelle, souvent utilisé pour caracteriser les régimes de marché.
 
 8. `volume_change_1d = log(V_t/V_{t-1})`  
-Interpretation: indique une acceleration ou un ralentissement du volume. Un pic de volume peut signaler un interet soudain du marche.
+Interprétation: indique une acceleration ou un ralentissement du volume. Un pic de volume peut signaler un intérêt soudain du marché.
 
 9. `volume_ratio_20d = V_t / mean_20(V)`  
-Interpretation: compare le volume du jour a sa moyenne recente. Permet de detecter des jours atypiques.
+Interprétation: compare le volume du jour à sa moyenne récente. Permet de détecter des jours atypiques.
 
 10. `gap_1d = (O_t - C_{t-1}) / C_{t-1}`  
-Interpretation: mesure le decalage entre la cloture precedente et l'ouverture du jour. Reflete l'information arrivee hors heures de marche.
+Interprétation: mesure le décalage entre la cloture précedente et l'ouverture du jour. Reflète l'information arrivée hors heures de marché.
 
 11. `range_hl_1d = (H_t - L_t) / C_t`  
-Interpretation: amplitude de la variation intraday. Une forte valeur traduit une grande incertitude ou volatilite intraday.
+Interprétation: amplitude de la variation intraday. Une forte valeur traduit une grande incertitude ou volatilité intraday.
 
 12. `open_to_close_1d = (C_t - O_t) / O_t`  
-Interpretation: direction du mouvement pendant la session. Permet de distinguer les journees haussieres ou baissieres.
+Interprétation: direction du mouvement pendant la session. Permet de distinguer les journées haussieres ou baissieres.
 
 13. `clv = ((C_t-L_t) - (H_t-C_t)) / (H_t-L_t)`  
-Interpretation: indique si le prix cloture proche du haut ou du bas de la journee. Reflète la pression acheteuse ou vendeuse.
+Interprétation: indique si le prix cloture proche du haut ou du bas de la journee. Reflète la pression acheteuse ou vendeuse.
 
 14. `body_to_range = abs(C_t-O_t)/(H_t-L_t)`  
-Interpretation: mesure la part du mouvement directionnel dans la bougie. Une valeur elevee indique un mouvement net sans forte indecision.
+Interprétation: mesure la part du mouvement directionnel dans la bougie. Une valeur élevée indique un mouvement net sans forte indecision.
 
 15. `upper_wick_ratio = (H_t-max(O_t,C_t))/(H_t-L_t)`  
-Interpretation: indique un rejet des prix vers le bas apres avoir atteint un plus haut, souvent interprete comme un signal de pression vendeuse.
+Interpretation: indique un rejet des prix vers le bas apres avoir atteint un plus haut, souvent interpreté comme un signal de pression vendeuse.
 
 16. `lower_wick_ratio = (min(O_t,C_t)-L_t)/(H_t-L_t)`  
-Interpretation: indique un rejet des prix vers le haut apres un plus bas, souvent interprete comme un signal de pression acheteuse.
+Interprétation: indique un rejet des prix vers le haut apres un plus bas, souvent interpreté comme un signal de pression acheteuse.
 
 17. `range_ratio_20 = (H_t-L_t)/mean_20(H-L)`  
-Interpretation: compare la volatilite du jour a la volatilite moyenne recente. Permet d’identifier des phases d’expansion ou de contraction.
+Interprétation: compare la volatilite du jour a la volatilité moyenne recente. Permet d’identifier des phases d’expansion ou de contraction.
 
 ### Features exogenes (RF)
 
 18. `vix_level = close_VIX_t`  
-Interpretation: represente le niveau de volatilite implicite du marche. Un VIX eleve correspond a un contexte de stress ou d’incertitude.
+Interpretation: represente le niveau de volatilite implicite du marche. Un VIX élevé correspond à un contexte de stress ou d’incertitude.
 
 ---
 ## Pipeline LSTM (`src/lstm_pipeline/features.py`)
@@ -89,50 +89,50 @@ Le LSTM predit un log-return a horizon `h+1`:
 1. `log_return_1d = log(C_t/C_{t-1})`  
 2. `log_return_5d = log(C_t/C_{t-5})`  
 3. `log_return_20d = log(C_t/C_{t-20})`  
-Interpretation: ces variables capturent le momentum a differents horizons, permettant au modele de detecter des tendances de court et moyen terme.
+Interprétation: ces variables capturent le momentum a différents horizons, permettant au modèle de détecter des tendances de court et moyen terme.
 
 4. `ema_return_5 = EMA_5(log_return_1d)`  
 5. `ema_return_20 = EMA_20(log_return_1d)`  
-Interpretation: moyennes exponentielles des rendements, qui donnent plus de poids aux observations recentes et permettent de lisser le bruit.
+Interprétation: moyennes exponentielles des rendements, qui permettent de lisser le bruit.
 
 6. `realized_vol_5d = sqrt(mean_5(r^2))`  
 7. `realized_vol_20d = sqrt(mean_20(r^2))`  
-Interpretation: mesures de volatilite realisee. Elles renseignent sur l’intensite des fluctuations recentes du marche.
+Interprétation: mesures de volatilité réalisée. Elles renseignent sur l’intensité des fluctuations récentes du marché.
 
 8. `vol_ratio_5_20 = realized_vol_5d / realized_vol_20d`  
-Interpretation: permet d’identifier les changements de regime de volatilite (par exemple passage d’un marche calme a un marche turbulent).
+Interprétation: permet d’identifier les changements de régime de volatilité (par exemple passage d’un marché calme a un marché turbulent).
 
 9. `gap_log = log(O_t/C_{t-1})`  
-Interpretation: capture l’information overnight, souvent liee aux nouvelles ou evenements exterieurs.
+Interpretation: capture l’information overnight, souvent liée aux nouvelles ou évenements exterieurs.
 
 10. `intraday_log = log(C_t/O_t)`  
-Interpretation: mesure la performance intraday, utile pour distinguer les dynamiques internes a la session.
+Interpretation: mesure la performance intraday, utile pour distinguer les dynamiques internes à la session.
 
 11. `volume_z_20 = (log(V_t) - mean_20(log(V))) / std_20(log(V))`  
-Interpretation: detecte les anomalies de volume par rapport a la norme recente.
+Interprétation: détecte les anomalies de volume par rapport à la norme récente.
 
 12. `day_of_week` (0=lundi ... 6=dimanche)  
-Interpretation: capture d’eventuels effets calendaires (par exemple comportement different le lundi ou le vendredi).
+Interprétation: capture d’éventuels effets calendaires (par exemple comportement different le lundi ou le vendredi).
 
 13. `zscore_price_vs_ma20 = (C_t - MA20(C)) / (STD20(C)+eps)`  
-Interpretation: mesure a quel point le prix est eloigne de sa moyenne mobile, normalise par sa volatilite.
+Interprétation: mesure à quel point le prix est éloigné de sa moyenne mobile, normalise par sa volatilite.
 
 14. `clv = ((C_t-L_t) - (H_t-C_t)) / (H_t-L_t)`  
 15. `body_to_range = abs(C_t-O_t)/(H_t-L_t)`  
-Interpretation: ces variables de micro-structure de bougie permettent de caracteriser le comportement du marche a l’echelle journaliere.
+Interprétation: ces variables de micro-structure de bougie permettent de caracteriser le comportement du marche a l’echelle journaliere.
 
 ---
 
 ### Features regime optionnelles (`use_regime_features=true`)
 
 16. `vol_ratio_5_60 = realized_vol_5d / realized_vol_60d`  
-Interpretation: compare la volatilite recente a une volatilite de plus long terme, utile pour detecter les transitions de regime.
+Interprétation: compare la volatilité récente à une volatilité de plus long terme, utile pour détecter les transitions de régime.
 
 17. `rolling_skew_60 = skew_60(log_return_1d)`  
-Interpretation: mesure l’asymetrie de la distribution des rendements. Une asymetrie peut indiquer des biais directionnels.
+Interprétation: mesure l’asymétrie de la distribution des rendements. Une asymetrie peut indiquer des biais directionnels.
 
 18. `rolling_kurtosis_60 = kurtosis_60(log_return_1d)`  
-Interpretation: mesure l’epaisseur des queues de distribution, c’est-a-dire la frequence d’evenements extremes.
+Interprétation: mesure l’épaisseur des queues de distribution, c’est-à-dire la fréquence d’évenements extrêmes.
 
 ---
 
@@ -142,13 +142,10 @@ Interpretation: mesure l’epaisseur des queues de distribution, c’est-a-dire 
 Interpretation: niveau global de stress du marche.
 
 20. `vix_change_1d = log(VIX_t/VIX_{t-1})`  
-Interpretation: variation du stress de marche. Une hausse rapide du VIX correspond souvent a un choc de volatilite.
+Interpretation: variation du stress de marche. Une hausse rapide du VIX correspond souvent à un choc de volatilité.
 
 21. `vix_zscore_60 = (VIX_t - mean_60(VIX)) / (std_60(VIX)+eps)`  
-Interpretation: indique si le VIX est anormalement eleve ou bas par rapport a son regime recent.
-
-22. `spy_return_1d = log(SPY_t/SPY_{t-1})` (si SPY charge)  
-Interpretation: capture la dynamique du marche global americain. Permet d’introduire une information de beta marche.
+Interprétation: indique si le VIX est anormalement élevé ou bas par rapport à son regime récent.
 
 ---
 
