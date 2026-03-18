@@ -47,7 +47,7 @@ Avant d’entraîner le modèle, il est nécessaire de transformer les données 
 - des indicateurs de volatilité (mesure des variations du marché)
 - des indicateurs de momentum (vitesse des mouvements de prix)
 
-Ces variables, appelées **features** [FEATURES.md](FEATURES.md), permettent de donner au modèle une vision plus riche du marché que le simple prix.
+Ces variables, appelées **features** ([FEATURES.md](FEATURES.md)), permettent de donner au modèle une vision plus riche du marché que le simple prix.
 
 Les données sont ensuite normalisées (mise à l’échelle) afin de faciliter l’apprentissage du modèle.
 
