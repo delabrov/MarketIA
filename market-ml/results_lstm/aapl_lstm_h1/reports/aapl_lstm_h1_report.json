@@ -122,13 +122,13 @@
       "baseline_score": 0.10101269207016413,
       "metric": "ic",
       "horizon": 1,
-      "csv": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/reports/aapl_feature_importance_permutation_h1.csv"
+      "csv": "/Users/delabrov/Desktop/projects/MarketIA/MarketIA/market-ml/results_lstm/aapl_lstm_h1/reports/aapl_feature_importance_permutation_h1.csv"
     }
   },
-  "pred_deciles_csv": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/reports/aapl_pred_deciles_h1.csv",
-  "model_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/models/aapl_lstm_h1.pt",
-  "scaler_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/models/aapl_scaler_h1.joblib",
-  "preds_path": "/Users/delabrov/Desktop/projects/CryptoIA/CryptoIA/market-ml/results_lstm/aapl_lstm_h1/preds/aapl_lstm_h1_preds.csv",
+  "pred_deciles_csv": "/Users/delabrov/Desktop/projects/MarketIA/MarketIA/market-ml/results_lstm/aapl_lstm_h1/reports/aapl_pred_deciles_h1.csv",
+  "model_path": "/Users/delabrov/Desktop/projects/MarketIA/MarketIA/market-ml/results_lstm/aapl_lstm_h1/models/aapl_lstm_h1.pt",
+  "scaler_path": "/Users/delabrov/Desktop/projects/MarketIA/MarketIA/market-ml/results_lstm/aapl_lstm_h1/models/aapl_scaler_h1.joblib",
+  "preds_path": "/Users/delabrov/Desktop/projects/MarketIA/MarketIA/market-ml/results_lstm/aapl_lstm_h1/preds/aapl_lstm_h1_preds.csv",
   "config": {
     "data": {
       "ticker": "AAPL",
