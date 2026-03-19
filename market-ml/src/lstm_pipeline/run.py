@@ -42,7 +42,7 @@ from .plots import (
 )
 
 # Reuse RF downloader to keep data fresh (same raw structure)
-from rf_pipeline import download_data as rf_download
+from others.rf_pipeline import download_data as rf_download
 from .importance import permutation_importance, ablation_importance
 
 
