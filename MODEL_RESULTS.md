@@ -6,7 +6,7 @@ Cette section présente les résultats du modèle LSTM sur l’ensemble de test.
 
 ### Prédictions vs retours réels
 
-![Returns True vs Predicted](market-ml/aapl_lstm_h1/plots/aapl_returns_true_vs_pred_test_h1.png)
+![Returns True vs Predicted](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_returns_true_vs_pred_test_h1.png)
 
 Ce graphique compare les retours réels (`true`) et prédits (`pred`) sur l’ensemble de test.
 
@@ -30,7 +30,7 @@ C’est un comportement classique des modèles de régression sur des séries fi
 
 ### Analyse des résidus
 
-![Residuals Time Series](market-ml/aapl_lstm_h1/plots/aapl_residuals_time_series.png)
+![Residuals Time Series](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_residuals_time_series.png)
 
 Les résidus (erreurs de prédiction) sont centrés autour de zéro, ce qui indique l’absence de biais global.
 
@@ -47,7 +47,7 @@ Le modèle ne capture pas complètement les changements de régime extrêmes. Il
 
 ### Distribution des résidus
 
-![Residuals Histogram](market-ml/aapl_lstm_h1/plots/aapl_residuals_hist_test_h1.png)
+![Residuals Histogram](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_residuals_hist_test_h1.png)
 
 La distribution des résidus est proche d’une loi normale centrée, mais avec :
 
@@ -67,7 +67,7 @@ Cela confirme que le modèle n’est pas adapté pour prédire les extrêmes, ma
 
 ### Prédiction des prix
 
-![Price Train Val Test](market-ml/aapl_lstm_h1/plots/aapl_price_train_val_test_predictions_h1.png)
+![Price Train Val Test](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_price_train_val_test_predictions_h1.png)
 
 Ce graphique montre la reconstruction du prix à partir des prédictions.
 
@@ -85,7 +85,7 @@ L'interprétation correcte est la suivante : Le modèle suit bien la tendance gl
 
 ### Zoom sur la période de test
 
-![Price Test Zoom](market-ml/aapl_lstm_h1/plots/aapl_price_test_zoom_with_residuals_h1.png)
+![Price Test Zoom](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_price_test_zoom_with_residuals_h1.png)
 
 Ce zoom permet de mieux visualiser les écarts entre prix réel et prédit.
 
@@ -99,7 +99,7 @@ Le modèle est alors fiable dans des conditions normales, mais moins robuste en 
 
 ### Relation prédictions vs réalité
 
-![Predicted vs True](market-ml/aapl_lstm_h1/plots/aapl_pred_vs_true_test_h1.png)
+![Predicted vs True](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_pred_vs_true_test_h1.png)
 
 Ce scatter plot est central pour l’analyse.
 
