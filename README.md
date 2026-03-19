@@ -54,242 +54,177 @@ Les données sont ensuite normalisées (mise à l’échelle) afin de faciliter 
 ---
 ## Entraînement du modèle
 
-Le cœur du projet repose sur un modèle **LSTM** (*Long Short-Term Memory*), c’est-à-dire un réseau de neurones récurrent (*Recurrent Neural Network*, ou **RNN**) conçu pour traiter des données ordonnées dans le temps. Contrairement à un modèle tabulaire classique, qui considère chaque observation comme indépendante, un LSTM exploite explicitement le fait que les données financières sont des **séries temporelles (time series)**. L’objectif est donc de fournir au modèle non pas une seule ligne de données, mais une **séquence** de plusieurs jours consécutifs, afin qu’il apprenne à détecter des dynamiques, des motifs récurrents et des changements de régime.
+Le modèle utilisé dans ce projet est un **LSTM (Long Short-Term Memory)**, conçu pour traiter des données séquentielles. Contrairement à un modèle classique qui prend une observation indépendante, le LSTM reçoit ici une **séquence temporelle** de plusieurs jours consécutifs.
 
-Dans ce projet, chaque date \(t\) est décrite par un vecteur de variables \(x_t \in \mathbb{R}^d\), où \(d\) est le nombre de **features** utilisées. Ces features sont construites à partir de l’historique de prix, de volume, de volatilité et éventuellement de variables exogènes comme le VIX. Le modèle ne regarde pas uniquement la date \(t\), mais une **fenêtre temporelle** de longueur \(L\), par exemple \(L = 60\) jours. Pour chaque date \(t\), l’entrée du modèle est donc :
+Dans notre cas, chaque jour t est représenté par un vecteur de variables (features) construites à partir des données de marché (prix, volume, volatilité, etc.). Plutôt que d’utiliser uniquement les données du jour t, le modèle reçoit une fenêtre glissante de longueur L (par exemple 60 jours) :
 
-\[
-X_t = (x_{t-L+1}, x_{t-L+2}, \dots, x_t)
-\]
+X_t = (x_{t-L+1}, ..., x_t)
 
-Cette matrice d’entrée a une dimension \((L, d)\). Elle représente l’état du marché sur les \(L\) derniers jours.
+Cette séquence permet au modèle de capturer des dynamiques temporelles comme :
+- des tendances (momentum),
+- des changements de volatilité,
+- des phases de régime (marché calme vs stress).
 
-La cible, elle, est un **rendement futur**. Dans le cas du projet, on prédit le plus souvent le rendement logarithmique à horizon \(h=1\), c’est-à-dire :
+La cible du modèle est le **log-return à horizon 1 jour** :
 
-\[
-y_t = \log\left(\frac{C_{t+1}}{C_t}\right)
-\]
+y_t = log(C_{t+1} / C_t)
 
-où \(C_t\) désigne le prix de clôture (*close price*) au jour \(t\). Ce choix est important : on ne prédit pas directement le prix futur, mais le **retour** (*return*), car les prix sont non stationnaires alors que les retours sont en général plus adaptés à l’apprentissage statistique.
+Le modèle apprend donc à approximer une fonction :
 
-Le modèle apprend donc une fonction de la forme :
+y_hat_t = f(X_t)
 
-\[
-\hat{y}_t = f_\theta(X_t)
-\]
+où X_t contient l’historique des features sur les derniers jours.
 
-où \(\theta\) représente l’ensemble des paramètres du réseau. L’idée est que la prédiction du retour futur dépend non seulement de l’état actuel du marché, mais aussi de l’évolution récente de plusieurs indicateurs.
+---
 
-### Pourquoi utiliser un LSTM ?
+### Fonctionnement du LSTM dans ce projet
 
-Un RNN classique met à jour un état caché \(h_t\) à partir de l’entrée \(x_t\) et de l’état précédent \(h_{t-1}\). En simplifiant, cela s’écrit :
+Le LSTM traite la séquence jour par jour et maintient un **état interne (memory)** qui évolue dans le temps. Cet état lui permet de retenir certaines informations importantes (par exemple un changement de volatilité) et d’en oublier d’autres.
 
-\[
-h_t = \phi(W_x x_t + W_h h_{t-1} + b)
-\]
+Concrètement, le modèle apprend à détecter des patterns temporels dans les features, comme :
+- une augmentation progressive de la volatilité,
+- une phase de surachat / survente,
+- ou une dynamique de momentum.
 
-Mais ce type de modèle souffre rapidement du problème de **vanishing gradient**, c’est-à-dire que l’information lointaine devient difficile à conserver pendant l’apprentissage. Le LSTM a été conçu précisément pour résoudre ce problème en introduisant une **mémoire interne** \(c_t\) et plusieurs **portes (gates)** qui contrôlent ce qui doit être retenu ou oublié.
+L’information n’est donc pas seulement contenue dans les features à un instant donné, mais dans leur **évolution dans le temps**.
 
-À chaque pas de temps \(t\), le LSTM calcule :
+---
 
-- une **forget gate** \(f_t\), qui décide quelle part de l’ancienne mémoire doit être conservée ;
-- une **input gate** \(i_t\), qui décide quelle nouvelle information doit entrer dans la mémoire ;
-- une **candidate memory** \(\tilde{c}_t\), c’est-à-dire la nouvelle information possible ;
-- une **output gate** \(o_t\), qui contrôle ce qui est transmis à l’état caché.
+### Construction des données
 
-Les équations standard sont :
+La construction du dataset suit des contraintes strictes pour éviter toute fuite d’information (data leakage) :
 
-\[
-f_t = \sigma(W_f x_t + U_f h_{t-1} + b_f)
-\]
+- toutes les features sont calculées uniquement avec des données passées (rolling windows alignées sur t),
+- la cible utilise uniquement le futur immédiat (t+1),
+- les données sont séparées chronologiquement en train / validation / test.
 
-\[
-i_t = \sigma(W_i x_t + U_i h_{t-1} + b_i)
-\]
+Aucun mélange aléatoire (shuffle) n’est effectué.
 
-\[
-\tilde{c}_t = \tanh(W_c x_t + U_c h_{t-1} + b_c)
-\]
+---
 
-\[
-c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t
-\]
+### Sélection des features (point clé du projet)
 
-\[
-o_t = \sigma(W_o x_t + U_o h_{t-1} + b_o)
-\]
+Un point important du projet est que les features n’ont pas été choisies arbitrairement.
 
-\[
-h_t = o_t \odot \tanh(c_t)
-\]
+Une procédure de **feature ablation** a été utilisée :
 
-Ici, \(\sigma\) est la fonction sigmoïde et \(\odot\) désigne le produit terme à terme. Conceptuellement, cela veut dire que le modèle apprend à distinguer :
+- le modèle est entraîné avec toutes les features,
+- puis on retire une feature à la fois,
+- on mesure l’impact sur les performances (IC, RMSE),
+- on conserve uniquement les features qui apportent réellement de l’information.
 
-- ce qui doit être **retenu** d’un régime passé,
-- ce qui doit être **oublié**,
-- et ce qui est **important maintenant** pour prédire le retour futur.
+Cela permet d’éviter :
+- les variables inutiles,
+- la redondance,
+- et le bruit dans le modèle.
 
-Dans notre cas, c’est particulièrement adapté car les marchés alternent entre des phases de tendance, de volatilité élevée, de consolidation ou de stress. Le LSTM permet d’encoder ce contexte de manière dynamique.
+Le modèle final utilise donc un ensemble de features **empiriquement validé**, et non simplement “intuitif”.
 
-### Construction des séquences et contraintes temporelles
+---
 
-Un point absolument essentiel dans un projet de finance est l’absence de **fuite d’information (data leakage)**. Pour une date \(t\), le modèle ne doit jamais utiliser d’information provenant de \(t+1\) ou du futur. Cela impose plusieurs contraintes.
+### Entraînement
 
-La première contrainte concerne la construction des features. Toutes les fenêtres mobiles (*rolling windows*) doivent être **alignées sur le passé**, c’est-à-dire construites avec les observations jusqu’à \(t\) uniquement. Par exemple, une volatilité réalisée sur 20 jours est calculée avec les retours de \(t-19\) à \(t\), jamais au-delà.
+Le modèle est entraîné en minimisant une erreur de type MSE entre la prédiction et le retour réel.
 
-La deuxième contrainte concerne la cible. Si l’on prédit \(y_t = \log(C_{t+1}/C_t)\), alors la ligne datée \(t\) contient les features disponibles à la fin de la journée \(t\), et la cible correspond au mouvement futur entre \(t\) et \(t+1\).
+Un mécanisme d’**early stopping** est utilisé pour éviter l’overfitting :
+l’entraînement s’arrête lorsque la performance sur l’ensemble de validation ne s’améliore plus.
 
-La troisième contrainte concerne les séparations entre données d’entraînement, de validation et de test. En série temporelle, on ne peut pas faire de *shuffle* aléatoire comme dans un problème classique. Les données doivent être séparées **chronologiquement**. Typiquement :
-
-- **train** : partie ancienne de l’historique ;
-- **validation** : période intermédiaire utilisée pour choisir les hyperparamètres et contrôler l’overfitting ;
-- **test** : période récente, jamais utilisée pendant l’apprentissage.
-
-Si l’on note \(T_{\text{train}} < T_{\text{val}} < T_{\text{test}}\), alors on impose :
-
-\[
-\text{Train} = \{t \leq T_{\text{train}}\}, \quad
-\text{Val} = \{T_{\text{train}} < t \leq T_{\text{val}}\}, \quad
-\text{Test} = \{T_{\text{val}} < t \leq T_{\text{test}}\}
-\]
-
-Cette séparation temporelle est non négociable en finance, car l’objectif est de simuler une situation réaliste : prédire l’avenir avec uniquement le passé disponible.
-
-### Normalisation des données
-
-Avant d’entrer dans le réseau, les features sont généralement **normalisées** (*feature scaling*). Le point critique est que les paramètres de normalisation — moyenne et écart-type — doivent être estimés **uniquement sur l’ensemble d’entraînement**, puis appliqués à la validation et au test. Si l’on calculait ces statistiques sur l’ensemble complet, on réintroduirait une fuite d’information.
-
-Si une feature brute est \(x\), une normalisation standard s’écrit :
-
-\[
-x^{\text{scaled}} = \frac{x - \mu_{\text{train}}}{\sigma_{\text{train}} + \varepsilon}
-\]
-
-où \(\mu_{\text{train}}\) et \(\sigma_{\text{train}}\) sont calculés uniquement sur le train.
-
-### Fonction de coût et apprentissage
-
-L’entraînement consiste à ajuster les paramètres \(\theta\) pour minimiser une fonction de coût. Dans ce type de projet, la perte la plus simple est généralement l’erreur quadratique moyenne (*Mean Squared Error*, **MSE**) :
-
-\[
-\mathcal{L}(\theta) = \frac{1}{N}\sum_{t=1}^{N}(y_t - \hat{y}_t)^2
-\]
-
-Cette fonction pénalise fortement les grosses erreurs. Elle pousse le modèle à apprendre la meilleure approximation moyenne du retour futur.
-
-L’optimisation se fait ensuite par **descente de gradient** avec un algorithme comme **Adam**, qui adapte dynamiquement le pas d’apprentissage (*learning rate*). À chaque époque (*epoch*), le modèle parcourt les données d’entraînement, calcule la perte, puis met à jour ses paramètres.
-
-Comme les données financières sont très bruitées, on utilise généralement aussi :
-
-- un **early stopping**, qui arrête l’apprentissage lorsque la performance sur la validation ne s’améliore plus ;
-- éventuellement du **dropout** ou d’autres mécanismes de régularisation pour limiter l’overfitting.
-
-Le nombre de jours dans la fenêtre \(L\), la taille de l’état caché, le nombre de couches, le learning rate ou encore la patience de l’early stopping sont des **hyperparamètres**. Ils influencent fortement les performances et doivent être choisis avec prudence.
+Les données sont normalisées à partir du train uniquement, puis appliquées à la validation et au test.
 
 ---
 
 ## Évaluation des performances
 
-Une fois le modèle entraîné, il faut l’évaluer sur des données jamais vues auparavant, c’est-à-dire sur le **jeu de test**. L’évaluation a deux dimensions complémentaires :
+L’évaluation du modèle ne repose pas uniquement sur l’erreur de prédiction. En finance, ce qui compte est la **qualité du signal**, pas seulement sa précision brute.
 
-1. une dimension **statistique**, qui mesure la qualité de la prédiction ;
-2. une dimension **financière**, qui mesure l’utilité réelle du signal pour une stratégie.
+---
 
-L’erreur brute n’est pas suffisante en finance. Un modèle peut avoir une erreur faible tout en étant inutile pour prendre des décisions. Inversement, un modèle peut avoir une erreur absolue importante mais réussir à classer correctement les jours “favorables” et “défavorables”, ce qui est souvent plus utile.
+### Métriques utilisées
 
-### 1. Métriques statistiques
+Plusieurs métriques sont utilisées dans le projet :
 
-La première métrique classique est la **MSE** :
+#### RMSE / MAE
 
-\[
-\text{MSE} = \frac{1}{N} \sum_{t=1}^N (y_t - \hat{y}_t)^2
-\]
+Mesurent l’erreur moyenne entre les prédictions et les valeurs réelles.
 
-Elle quantifie l’erreur quadratique moyenne entre retour réel et retour prédit.
+Elles permettent de vérifier que le modèle ne diverge pas, mais restent secondaires.
 
-On utilise aussi la **RMSE** (*Root Mean Squared Error*) :
+---
 
-\[
-\text{RMSE} = \sqrt{\text{MSE}}
-\]
+#### Information Coefficient (IC)
 
-Elle a l’avantage d’être exprimée dans la même unité que la cible.
+IC = corr(y_hat, y)
 
-Une autre métrique importante est la **MAE** (*Mean Absolute Error*) :
+C’est la corrélation entre les prédictions et les retours réels.
 
-\[
-\text{MAE} = \frac{1}{N} \sum_{t=1}^N |y_t - \hat{y}_t|
-\]
+C’est la métrique la plus importante du projet :
+elle mesure directement si le modèle capte un signal exploitable.
 
-La MAE est moins sensible aux valeurs extrêmes que la MSE.
+---
 
-### 2. Corrélation entre prédictions et valeurs réelles
+#### Rank IC
 
-En finance, on utilise beaucoup l’**Information Coefficient** (**IC**), qui est la corrélation de Pearson entre \(\hat{y}_t\) et \(y_t\) :
+Corrélation de rang entre les prédictions et les retours.
 
-\[
-IC = \text{corr}(\hat{y}_t, y_t)
-\]
+Permet de vérifier si le modèle classe correctement les situations, même si les amplitudes sont imparfaites.
 
-Un IC positif signifie que les prédictions ont tendance à aller dans le bon sens.
+---
 
-On calcule aussi le **Rank IC**, qui est la corrélation de Spearman entre le rang des prédictions et le rang des réalisations. Cette métrique mesure la capacité du modèle à classer correctement les situations.
+#### Hit Ratio
 
-### 3. Hit ratio
+Proportion de fois où le modèle prédit correctement le signe du retour.
 
-Le **hit ratio** correspond à la proportion de fois où le modèle prédit correctement le signe du retour :
+Même un hit ratio proche de 52–53% peut être exploitable.
 
-\[
-\text{Hit Ratio} = \frac{1}{N}\sum_{t=1}^{N}\mathbf{1}\big(\text{sign}(\hat{y}_t) = \text{sign}(y_t)\big)
-\]
+---
 
-Même un hit ratio légèrement supérieur à 50% peut être exploitable en finance.
+### Analyse par déciles
 
-### 4. Analyse par déciles
+Les prédictions sont triées et découpées en groupes (déciles).
 
-Les prédictions sont triées puis regroupées en déciles. On calcule ensuite le retour moyen observé dans chaque groupe. Si le modèle est pertinent, les déciles les plus élevés doivent correspondre aux meilleurs retours réels.
+On observe ensuite le retour moyen réel dans chaque groupe.
 
-Cette approche permet d’évaluer la capacité du modèle à **ordonner** les opportunités.
+Un bon modèle doit produire une relation monotone :
+les meilleures prédictions doivent correspondre aux meilleurs retours.
 
-### 5. Analyse des résidus
+Cette analyse est centrale pour vérifier que le modèle produit un signal exploitable.
 
-Les résidus sont définis par :
+---
 
-\[
-\varepsilon_t = y_t - \hat{y}_t
-\]
+### Analyse des résidus
 
-On analyse leur distribution, leur variance et leur autocorrélation. Si les résidus contiennent encore de la structure, cela signifie que le modèle peut encore être amélioré.
+Les résidus (erreur entre réel et prédit) sont analysés pour détecter :
 
-### 6. Importance des features
+- un biais systématique,
+- une structure non capturée,
+- une autocorrélation restante.
 
-Deux approches principales sont utilisées :
+Cela permet d’identifier les limites du modèle.
 
-- **Permutation importance** : on perturbe une feature et on mesure la dégradation de performance ;
-- **Feature ablation** : on supprime une feature et on mesure la variation de métriques :
+---
 
-\[
-\Delta IC_i = IC_{\text{full}} - IC_{-i}
-\]
+### Importance des features
 
-\[
-\Delta RMSE_i = RMSE_{-i} - RMSE_{\text{full}}
-\]
+La contribution de chaque feature est évaluée via :
 
-Ces méthodes permettent d’identifier les variables réellement utiles.
+- permutation importance,
+- feature ablation (ΔIC, ΔRMSE).
 
-### 7. Objectif final
+Cela permet de comprendre quelles variables portent réellement le signal.
 
-L’objectif n’est pas uniquement de prédire correctement, mais de produire un signal exploitable pour une stratégie d’investissement. L’évaluation du modèle doit donc toujours être liée à son utilisation pratique.
+---
 
-En résumé, le pipeline complet consiste à :
+## Objectif réel
 
-1. entraîner le modèle sur le train ;
-2. valider les hyperparamètres sur la validation ;
-3. évaluer sur le test ;
-4. transformer les prédictions en décisions d’investissement.
+Le but du modèle n’est pas de prédire parfaitement les rendements.
 
-C’est cette cohérence entre modèle, évaluation et stratégie qui permet d’obtenir des résultats robustes.
+Le but est de produire un signal :
+
+- légèrement corrélé au futur,
+- stable dans le temps,
+- exploitable dans une stratégie.
+
+C’est cette combinaison entre **modèle + sélection de variables + évaluation rigoureuse** qui permet d’obtenir un système cohérent.
 
 ## De la prédiction à la stratégie
 
