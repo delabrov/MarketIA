@@ -97,8 +97,6 @@ Certaines variables présentent des contributions négatives.
 - `body_to_range` : information trop locale / bruitée
 - `vix_change_1d` : choc trop court terme, peu exploitable
 
-Ces features ont été supprimées du modèle final.
-
 ---
 
 ### Conclusion
