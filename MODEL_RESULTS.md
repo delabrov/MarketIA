@@ -24,22 +24,6 @@ Le modèle ne sur-réagit pas au bruit → bon signe pour une stratégie stable.
 
 ---
 
-### Analyse des résidus
-
-![Residuals Time Series](market-ml/results_lstm/aapl_lstm_h1/plots/aapl_residuals_time_series.png)
-
-Les résidus (erreurs de prédiction) sont centrés autour de zéro, ce qui indique l’absence de biais global.
-
-Cependant :
-
-- On observe des **pics de résidus importants**, notamment en périodes de forte volatilité.
-- La variance des résidus semble **non constante** (hétéroscédasticité).
-
-Interprétation :
-
-Le modèle ne capture pas complètement les changements de régime extrêmes. Il reste performant dans des régimes “normaux”, mais perd en précision lors des phases de stress.
-
----
 
 ### Distribution des résidus
 
