@@ -106,7 +106,7 @@ Aucun mélange aléatoire (shuffle) n’est effectué.
 
 Un point important du projet est que les features n’ont pas été choisies arbitrairement.
 
-Une procédure de **feature ablation** a été utilisée :
+Une procédure de **feature ablation** ([ABLATION.md](ABLATION.md)) a été utilisée :
 
 - le modèle est entraîné avec toutes les features,
 - puis on retire une feature à la fois,
