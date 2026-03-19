@@ -6,7 +6,7 @@ Cette procédure est implémentée dans le module d’ablation. Le pipeline comm
 
 `target_t = log(C_(t+h) / C_t)`
 
-Dans notre cas principal, on travaille avec `h = 1`, donc avec le rendement logarithmique du lendemain. Une fois le dataset construit, les données sont séparées chronologiquement en ensembles `train`, `validation` et `test` via `compute_split_masks`. Cette contrainte est essentielle : aucune observation future ne doit être utilisée pour entraîner ou normaliser le modèle. Le scaling des variables est ensuite effectué uniquement à partir du train grâce à `scale_features`, puis les séquences sont construites avec `make_sequences` pour former les entrées du LSTM.
+Ici, on travaille avec `h = 1`, donc avec le rendement logarithmique du lendemain. Une fois le dataset construit, les données sont séparées chronologiquement en ensembles `train`, `validation` et `test` via `compute_split_masks`. Cette contrainte est essentielle : aucune observation future ne doit être utilisée pour entraîner ou normaliser le modèle. Le scaling des variables est ensuite effectué uniquement à partir du train grâce à `scale_features`, puis les séquences sont construites avec `make_sequences` pour former les entrées du LSTM.
 
 Le principe de l’ablation est alors le suivant. Soit un ensemble complet de features `F = {f_1, ..., f_p}`. On entraîne d’abord un modèle de référence avec toutes les features. Ensuite, pour chaque feature `f_i`, on construit un nouveau dataset contenant `F \ {f_i}`, c’est-à-dire toutes les variables sauf celle-ci. Le modèle est réentraîné entièrement sur cette nouvelle base, avec la même architecture, les mêmes hyperparamètres, la même longueur de séquence et la même logique de séparation temporelle. Le code ne se contente donc pas de neutraliser la variable ; il refait un apprentissage complet sans elle, ce qui donne une mesure plus fidèle de sa contribution réelle.
 
@@ -23,7 +23,7 @@ Dans le code, cette logique apparaît dans la fonction `run_ablation`. Après l�
 
 Les graphiques utilisés pour l’analyse sont disponibles dans :
 
-`market-ml/feature_ablation/aapl_h1/20260304_170534/plots/`
+`market-ml/results_lstm/feature_ablation/aapl_h1/20260304_170534/plots/`
 
 ---
 
@@ -33,7 +33,7 @@ Les figures ci-dessous permettent de visualiser l’impact de chaque feature sur
 
 #### Importance des features via ΔIC
 
-![Ablation - Delta IC trié](market-ml/feature_ablation/aapl_h1/20260304_170534/plots/delta_ic_sorted.png)
+![Ablation - Delta IC trié](market-ml/results_lstm/feature_ablation/aapl_h1/20260304_170534/plots/delta_ic_sorted.png)
 
 Cette figure classe les variables selon leur contribution à l’Information Coefficient. Les features les plus importantes sont :
 
@@ -54,7 +54,7 @@ Le fait que `volume_z_20` soit la feature la plus importante indique que les ano
 
 #### Analyse conjointe ΔIC / ΔRMSE
 
-![Ablation - Delta IC vs Delta RMSE](market-ml/feature_ablation/aapl_h1/20260304_170534/plots/delta_ic_vs_delta_rmse.png)
+![Ablation - Delta IC vs Delta RMSE](market-ml/results_lstm/feature_ablation/aapl_h1/20260304_170534/plots/delta_ic_vs_delta_rmse.png)
 
 Ce graphique permet d’identifier les features robustes.
 
@@ -74,7 +74,7 @@ Ces variables améliorent à la fois la qualité du signal et la précision du m
 
 #### Impact sur le RMSE
 
-![Ablation - Delta RMSE trié](market-ml/feature_ablation/aapl_h1/20260304_170534/plots/delta_rmse_sorted.png)
+![Ablation - Delta RMSE trié](market-ml/results_lstm/feature_ablation/aapl_h1/20260304_170534/plots/delta_rmse_sorted.png)
 
 Les features les plus importantes en termes d’erreur sont :
 
