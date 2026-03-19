@@ -20,11 +20,7 @@ Interprétation :
 
 C’est un comportement classique des modèles de régression sur des séries financières. Le bruit domine largement le signal (rapport signal sur bruit faible), et le modèle apprend essentiellement la composante **prévisible et persistante**. Il agit donc comme un filtre.
 
-👉 Point positif :
-- Le modèle ne sur-réagit pas au bruit → bon signe pour une stratégie stable.
-
-👉 Limite :
-- Les événements extrêmes (crash, spikes) ne sont pas capturés → risque sous-estimé.
+Le modèle ne sur-réagit pas au bruit → bon signe pour une stratégie stable. Cependant, les événements extrêmes (crash, spikes) ne sont pas capturés → risque sous-estimé.
 
 ---
 
